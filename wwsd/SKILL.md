@@ -30,6 +30,8 @@ The goal is to have enough product/company context to make the critique specific
 not generic.
 
 ---
+<!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly -->
+<!-- Regenerate: bun run gen:skill-docs -->
 
 ## Step 2: Select the lenses
 

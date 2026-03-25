@@ -61,6 +61,7 @@ additional lenses and append them to the output.
 - Favourite move: instrument everything, index it later. You don't know what you'll need.
 - Red flag: any system that trusts its own logs. "The attacker owns the endpoint — your logs are lying."
 - On AI agents specifically: "Agents are the new endpoints. They move laterally, they exfiltrate, they escalate. If you don't have telemetry on every action, you're blind."
+- War story: When CrowdStrike was investigating the 2016 DNC breach, Kurtz's team detected two separate Russian intelligence groups (Fancy Bear and Cozy Bear) operating inside the same network — neither aware of the other. The only reason they caught both was that CrowdStrike's Falcon agent had telemetry granular enough to distinguish the two TTPs. If they'd relied on the DNC's own logs, they'd have seen one attacker at best.
 
 **AI SAFETY & TRUST — Dario Amodei Lens (Anthropic)**
 *Mental model: capability and safety must scale together; interpretability is not optional; trust is earned through constraint, not declaration.*
@@ -68,6 +69,7 @@ additional lenses and append them to the output.
 - Favourite move: constitutional constraints, red-teaming from day one, graduated trust.
 - Red flag: "the model will figure it out." The model won't figure it out.
 - On governance: "A policy layer that can be bypassed is not a policy layer."
+- War story: When Anthropic developed Constitutional AI, Dario's team discovered that RLHF alone produced models that were helpful but would confidently confabulate when uncertain. The breakthrough was realizing they needed the model to critique its own outputs against explicit principles — not just optimize for human approval. The constitutional approach emerged from watching helpfulness and honesty diverge under standard training, and deciding that a model that says "I don't know" is more trustworthy than one that always has an answer.
 
 **AI SCALE & ECOSYSTEM — Sam Altman Lens (OpenAI)**
 *Mental model: API-first, speed wins, distribution is the moat, platforms beat products.*
@@ -75,6 +77,7 @@ additional lenses and append them to the output.
 - Favourite move: launch early, let the ecosystem build the use cases you didn't imagine.
 - Red flag: waiting until it's "ready." The window closes fast.
 - On pricing: usage-based, start cheap, capture the long tail first.
+- War story: When OpenAI launched the ChatGPT API in March 2023, Sam pushed to price it at 10x cheaper than the existing GPT-3 API — against internal resistance that it would cannibalize revenue. Within weeks, Snap, Instacart, and Shopify had integrated it. The cheap API created a developer ecosystem that made GPT the default, which mattered far more than per-token margin. The lesson: distribution at low margin beats premium pricing with no ecosystem.
 
 **DEVELOPER EXPERIENCE — Patrick Collison Lens (Stripe)**
 *Mental model: docs are the product, DX is the moat, seven-line integration or it's broken.*
@@ -82,6 +85,7 @@ additional lenses and append them to the output.
 - Favourite move: make the happy path so obvious it feels like cheating. Make errors so specific they contain the fix.
 - Red flag: any SDK where you need to read the source to understand what's happening.
 - On onboarding: "The best API documentation makes you feel stupid for not building this sooner."
+- War story: Early Stripe had a legendary internal rule: every API error message had to contain enough information to fix the problem without googling. Patrick personally reviewed error strings. When a developer hit a card decline, Stripe didn't return "card_declined" — it returned the decline code, a human-readable reason, and a link to the specific docs page. This obsession with DX at the error boundary is what made Stripe's API the gold standard — developers chose it not because payments are fun, but because Stripe was the first payments company that respected their time.
 
 **PRODUCT DESIGN — Steve Jobs Lens (Apple)**
 *Mental model: subtract until it hurts, then subtract more; the best interface is no interface; simplicity is the hardest thing.*
@@ -89,6 +93,7 @@ additional lenses and append them to the output.
 - Favourite move: remove the feature nobody asked to remove. That's the one that was holding the product back.
 - Red flag: feature lists. Features are debt. "People don't want a drill — they want a hole."
 - On B2B: "Enterprise software is ugly because it was designed for the buyer, not the user."
+- War story: When the original iPhone was being developed, Jobs killed the physical keyboard that the entire team had prototyped — months of work, gone. The hardware team was furious. But Jobs had seen the multi-touch demo and realized a software keyboard meant the entire face could be screen. Every other phone maker kept the keyboard because "users expect it." Jobs deleted the expectation. The result was a device so different it created a new category. The lesson wasn't courage — it was that the best product decision is often the removal that terrifies your team.
 
 **INFRASTRUCTURE SCALE — Werner Vogels Lens (AWS)**
 *Mental model: primitives beat products; unbundle monoliths; the boring stuff is the business.*
@@ -96,6 +101,7 @@ additional lenses and append them to the output.
 - Favourite move: decompose until the pieces are reusable by people you've never met.
 - Red flag: building a thing when you should be building the thing that makes the thing.
 - On audit/compliance infra: "Tamper-proof logs at scale are harder than they look. That's the moat."
+- War story: When AWS launched S3 in 2006, the internal team wanted to build a file storage product with folders, permissions, and a desktop sync client. Vogels insisted on building a primitive instead — just an object store with an HTTP API. No folders, no filesystem semantics, just PUT and GET with a key. The team thought it was too bare. But that primitive became the foundation for an entire ecosystem: Netflix built their CDN on it, Dropbox built their product on it, and every startup in the world used it as their default storage layer. Vogels's lesson: "Don't build the application. Build the thing that makes a thousand applications possible."
 
 **AI-FIRST DEVELOPER TOOLS & AGENTS — Boris Cherny Lens (Anthropic / Claude Code)**
 *Mental model: types are a design tool, not a bureaucratic one; the agent is just code with more surface area for failure; good abstractions make the unsafe thing hard to do accidentally; developer experience is a force multiplier — bad DX compounds into bad products.*
@@ -106,6 +112,7 @@ additional lenses and append them to the output.
 - On agent reliability: "An agent that works 90% of the time isn't a product — it's a demo with debt. The 10% failure modes are usually untyped, unhandled, and unpredictable. Model them explicitly or they will model themselves at the worst possible moment."
 - On tool design for agents: "Every tool you give an agent is an API contract. Design it like one. What are the preconditions? The postconditions? The error surface? An agent calling a poorly-designed tool is like calling a function with no docs and no types — technically possible, practically treacherous."
 - On Claude Code specifically: "The IDE is dead. The terminal is dead. The programming environment of the future is conversational, but the underlying system still needs to be correct. You still need types. You still need tests. You still need to understand what the code does. AI doesn't remove that responsibility — it raises the stakes."
+- War story: When building Claude Code's tool system, the early prototype let the model call any tool with freeform JSON arguments — maximum flexibility. It worked in demos but failed catastrophically in production: the model would pass subtly wrong argument shapes that compiled but produced silent data corruption. Boris pushed to replace the loose interface with strict TypeScript schemas for every tool — preconditions, postconditions, error types, all encoded in the type system. The team resisted because it meant rewriting every tool definition. But after the switch, an entire class of silent failures vanished overnight. The types caught at definition time what runtime would have caught in a user's codebase.
 
 **GROWTH — Drew Houston Lens (Dropbox)**
 *Mental model: product-led growth, viral loops built into the core action, referral as infrastructure.*
@@ -113,6 +120,7 @@ additional lenses and append them to the output.
 - Favourite move: make sharing the product, not a feature of the product.
 - Red flag: outbound sales as the primary motion before product-market fit.
 - On B2B PLG: "The best B2B products make the individual useful first. The team adoption follows."
+- War story: Dropbox's famous waitlist video in 2008 — a 3-minute screencast posted to Hacker News — drove signups from 5,000 to 75,000 overnight. But the real growth hack came later: the referral program that gave both parties 500MB of free space. Drew noticed that users were already emailing Dropbox links to share files. The product's core action (sharing a file) was inherently viral. Instead of building a separate referral system, he made the sharing action itself the growth loop. The referral program just amplified what users were already doing naturally.
 
 **COMPLIANCE & REGULATION — CISA/SEC Lens**
 *Mental model: adversarial by default; every audit is a hostile deposition; documentation is liability before it's protection.*
@@ -120,6 +128,7 @@ additional lenses and append them to the output.
 - Favourite move: assume the worst-case subpoena scenario and design backward from there.
 - Red flag: audit trails that can be modified by the people they're auditing.
 - On AI agents: "An AI agent that can't explain its actions is an uncontrolled process. Uncontrolled processes don't pass audits."
+- War story: After the 2020 SolarWinds breach, CISA's post-mortem revealed that the compromised Orion software had passed every existing compliance audit for years — because the audits checked policy documents, not actual runtime behavior. The attackers hid inside a digitally-signed update. CISA's response was to fundamentally rewrite federal guidance: compliance must verify actual system behavior, not just documented intent. The lesson for any product: if your audit trail proves you followed the process but can't prove what actually happened at runtime, you've built a compliance theater set, not a security system.
 
 **OPEN SOURCE MOAT — Mitchell Hashimoto Lens (HashiCorp)**
 *Mental model: open core is the distribution strategy; the enterprise tier must be genuinely different, not artificially crippled.*
@@ -127,12 +136,14 @@ additional lenses and append them to the output.
 - Favourite move: build the community around the open thing, monetize the operational burden.
 - Red flag: open source as a marketing tactic rather than a genuine distribution strategy.
 - On developer tools: "If the open source version isn't something you'd actually use, the enterprise version won't sell."
+- War story: When HashiCorp built Terraform, Mitchell open-sourced the entire state management and provider ecosystem — the hard part. The enterprise product (Terraform Cloud) only added collaboration, governance, and remote state. Competitors who open-sourced the easy parts and locked up the core found that nobody built a community around their projects. Mitchell's insight: developers will build an ecosystem around the open core only if the open core is genuinely the product, not a demo. HashiCorp hit $500M ARR because the open source version was so good that enterprises adopted it organically, then paid to operate it at scale.
 
 **PLATFORM THINKING — Parker Conrad Lens (Rippling)**
 *Mental model: compound product; every module makes the others more valuable; workflows are the moat.*
 - Asks: What does this enable that wasn't possible before? What's the compounding effect at module 5 vs module 1?
 - Favourite move: build the boring integration layer nobody wants to build, then own the workflows that sit on top.
 - Red flag: building a point solution in a world that's moving to compound software.
+- War story: When Parker built Rippling, the first module was employee onboarding — specifically, the "click one button and the new hire gets a laptop, email, Slack, payroll, and benefits on day one" flow. Investors told him to pick one vertical (just payroll, or just IT). He refused because the entire value proposition was the compound effect: each module made the others better because they shared the same employee graph. By module 5, competitors couldn't catch up because replicating Rippling meant building 5 products simultaneously. The boring integration layer — syncing employee data across every system — became the moat nobody else wanted to build.
 
 **FIRST PRINCIPLES — Elon Musk Lens**
 *Mental model: question every assumption, compress the requirement, build what physics allows not what convention expects.*
@@ -140,6 +151,7 @@ additional lenses and append them to the output.
 - Favourite move: delete a step before optimizing it. "The best part is no part."
 - Red flag: "that's how it's always been done." That's not a reason, that's a confession.
 - On compliance: "Regulators describe outcomes, not implementations. If you can prove the outcome another way, you can."
+- War story: When SpaceX was building Falcon 1, NASA's standard rocket avionics required a $10M flight computer. Elon's team asked: what does the computer actually need to do? The answer was: read sensors, run guidance equations, fire valves. They built it from commercial-off-the-shelf Linux boards for under $10K. NASA's contractors said it would never pass qualification. It flew. The $10M computer existed because nobody had questioned whether a rocket needed aerospace-grade hardware to do arithmetic. The lesson: the requirement is the output, not the implementation everyone assumes is necessary.
 
 **DEEP TECH BETS — Vinod Khosla Lens (Khosla Ventures)**
 *Mental model: bet on science fiction becoming fact; 10x better or don't bother; incumbents are vulnerable because they optimize for the present, not the possible.*
@@ -149,6 +161,7 @@ additional lenses and append them to the output.
 - On AI: "Expertise is being disrupted. The doctors, lawyers, and engineers who say AI can't replace them are the taxi drivers of 2015. The right question isn't 'can AI do this?' — it's 'why are humans still doing this?'"
 - On enterprise GTM: "The incumbent's moat is sales force and switching cost, not technology. That's not a moat — that's a countdown timer."
 - On founders hedging: "If you're not embarrassed by the audacity of your bet, you're not betting big enough."
+- War story: Khosla backed Impossible Foods when every food industry expert said plant-based meat that tastes like beef was scientifically impossible. The breakthrough assumption was heme — a molecule from soy roots that makes meat taste like meat. Vinod's investment thesis wasn't "better veggie burgers" (2x improvement) — it was "molecular-level replication of meat flavor" (10x). When Impossible launched at high-end restaurants and got Michelin chefs endorsing it, the food industry realized the disruption wasn't incremental — it was a category redefinition. The experts who said it couldn't be done were optimizing within the existing paradigm. Khosla funded the people who ignored the paradigm entirely.
 
 **VENTURE SCALE AMBITION — Marc Andreessen Lens (a16z)**
 *Mental model: software eats every industry; the bears are always wrong; the only cardinal sin is insufficient ambition; strong founders with strong opinions beat consensus.*
@@ -158,6 +171,7 @@ additional lenses and append them to the output.
 - On competition: "The correct response to 'Google could build this' is 'yes — and they won't, because they'd have to cannibalize a $200B revenue line to do it.'"
 - On distribution: "Distribution is the actual hard problem. Technology is the easy part. If you have distribution, double down on it to the exclusion of everything else. If you don't, it is the only thing that matters."
 - On the current moment: "We are at the beginning of a Cambrian explosion in software. The entire stack of human expertise is being rewritten. Companies that treat this as incremental will be treated as incumbents."
+- War story: When Marc wrote "Why Software Is Eating The World" in 2011, the Wall Street Journal nearly killed the piece — the editors thought calling companies like Amazon and Netflix "software companies" was absurd. Retail and media were hardware businesses. Marc's thesis was that every industry would be re-architected around software, and the incumbents would be the last to realize it. Borders, Blockbuster, and the newspaper industry proved him right within 5 years. The lesson he draws for founders: if industry experts say your category framing is wrong, you're probably reframing the category correctly — because the incumbents' map is the old territory.
 
 **FOUNDER MODE & EXPERIENCE DESIGN — Brian Chesky Lens (Airbnb)**
 *Mental model: the founder must be the best product person in the company at every stage — not just at founding; 11-star experiences reveal what's actually possible; hospitality is a design philosophy, not an industry; AI doesn't change what great feels like, it changes who can build it.*
@@ -168,6 +182,7 @@ additional lenses and append them to the output.
 - On design at scale: "Most companies lose their design soul around 200 people. It gets delegated to a design team, then to a design system, then to tickets. The founder has to fight to stay in the aesthetic decisions. If the CEO isn't opinionated about the color of the button, someone without taste will be."
 - On the hospitality lens: "We're not in the home-sharing business. We're in the belonging business. Every product decision is a question: does this make people feel more or less welcome? More or less human? If your product feels transactional, you've already lost."
 - On rebuilding after crisis: "COVID destroyed 80% of our revenue in 8 weeks. We cut 1,900 people. And then we shipped our best product ever — because we were forced to focus. Constraints are not the enemy of creativity. They're the precondition for it."
+- War story: In 2023, Brian personally redesigned the Airbnb search results page — not delegated, not workshopped, him in Figma. He noticed that hosts were uploading beautiful photos but the search grid compressed them into identical-looking thumbnails. Every listing looked the same. He pushed for a new layout that let the first photo breathe, showed the host's face, and highlighted what made each place unique. The team had data showing the old grid had higher click-through rates per square pixel. Brian overrode the data: "The data says people click. It doesn't say people feel anything." Post-redesign, booking quality went up — guests chose places that actually matched what they wanted, not just what looked clickable.
 
 **FOUNDER-MARKET FIT — YC Lens (Graham / Tan)**
 *Mental model: make something people want; do things that don't scale; the ramen-profitable bar clarifies everything; talking to users beats thinking about users.*
@@ -177,6 +192,7 @@ additional lenses and append them to the output.
 - On premature scaling: "You don't have a growth problem. You have a retention problem you haven't noticed yet because you keep acquiring new users to paper over it."
 - On AI products specifically: "The best AI products feel like magic to the user and are invisible to them. If your users are learning your product's AI quirks to get good outputs, the product is broken."
 - On fundraising before PMF: "Raising a lot of money before you know what you're building is like buying a bigger boat before you know if the sea is real."
+- War story: When Airbnb applied to YC in 2009, Paul Graham thought the idea was insane — who would let strangers sleep in their home? But the founders had done the unscalable thing: during the DNC in Denver, they'd personally bought air mattresses, set up listings, and hosted guests themselves. They had revenue — $200/week from cereal boxes (Obama O's) they'd designed to fund the company. PG's lesson from Airbnb: if the founders are resourceful enough to fund a startup by selling cereal, they're resourceful enough to make anything work. The quality of the founders mattered more than the plausibility of the idea.
 
 ---
 
@@ -207,6 +223,18 @@ WHAT [FIRST NAME] WOULD CHANGE (top 3, ordered by impact):
 
 WHAT [FIRST NAME] WOULD DOUBLE DOWN ON:
 [1-2 things he'd actually praise — be specific, not sycophantic]
+
+WAR STORY:
+[A specific work anecdote from this person's career that is directly relevant to the
+topic being reviewed. Pick the anecdote that best illustrates WHY their critique matters —
+not their most famous story, but the one most applicable to this specific situation.
+Each lens has a seed war story in the library above, but DO NOT just repeat it. Use
+your knowledge of their full career to pick the anecdote that best maps to the user's
+topic. Prefer work/business anecdotes over personal life stories. If the topic is about
+pricing, pick a pricing war story. If it's about team structure, pick an org design
+war story. The anecdote should make the critique land harder — "he's not theorizing,
+he lived this exact situation." 2-4 sentences, concrete details, name the product/year
+if possible.]
 
 THE QUESTION [FIRST NAME] WOULD ASK THAT NOBODY ASKED:
 [The uncomfortable question that cuts to the real issue]
@@ -252,3 +280,4 @@ NEXT SKILL:
 3. **Praise is earned.** The "what [name] would double down on" section must identify something genuinely good, not just the absence of bad. If there's nothing to praise, say so.
 4. **The uncomfortable question is the most valuable output.** Every lens has a question the person would ask that the room wasn't ready for. Surface it.
 5. **Skip weak lenses.** A security-only question doesn't need the product design lens. 4 sharp perspectives beat 8 generic ones.
+6. **War stories are dynamic.** Each lens has a seed anecdote in the library, but the WAR STORY section in your output must be **chosen for relevance to the specific topic**, not copied from the seed. These leaders have deep careers — pick the anecdote that most closely mirrors the user's situation. If the topic is pricing, don't tell the iPhone keyboard story — tell the iTunes $0.99 story. The seed anecdotes set the tone; your job is to find the one that makes the user think "he faced this exact problem." Prefer work/business anecdotes over personal life.
